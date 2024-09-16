@@ -1,0 +1,8 @@
+.a-canvas{
+    height: 50% !important;
+    width: 50% !important;
+}
+html.a-fullscreen .a-canvas{
+    height: 50% !important;
+    width: 50% !important;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Object Tracking with A-Frame</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <link src="./style.css" type="style"/>
+    <style> 
+        html.a-fullscreen .a-canvas {
+          width: 50% !important;
+          height: 50% !important;
+          position: relative !important;
+        }
+  
+        .a-canvas {
+          height: 50% !important;
+          width: 50% !important;
+          position: relative !important;
+        }
+      </style>
+</head>
+<body>
+    <a-scene style="display: flex; justify-content: center; align-items: center;">
+        <a-entity camera position="0 0 15" ></a-entity>
+
+        <a-box id="tracked-box" position="0 0 0" rotation="0 45 0" color="#4CC3D9" ></a-box>
+
+        <a-plane id="video-feed" position="0 3 -5" style="display: flex !important; justify-content: center;" width="50" height="50" rotation="0 0 0"></a-plane>
+
+    </a-scene>
+
+    <script>
+        // WebSocket to receive coordinates and video frame
+        const ws = new WebSocket("ws://localhost:8765");
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            // Update the position of the cube
+            const box = document.getElementById('tracked-box');
+            box.setAttribute('position', `${data.x / 100} ${data.y / 100} ${data.z * -1}`);
+
+            // Update the video feed
+            const videoFeed = document.getElementById('video-feed');
+            videoFeed.setAttribute('src', `data:image/jpeg;base64,${data.frame}`);
+        };
+    </script>
+</body>
+</html> 
+
